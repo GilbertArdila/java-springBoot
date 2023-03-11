@@ -31,12 +31,14 @@ public class User {
     public User() {
     }
 
-    public User(long id, String name, String email, LocalDate birthday) {
-        this.id = id;
+    public User( String name, String email, LocalDate birthday) {
+
         this.name = name;
         this.email = email;
         this.birthday = birthday;
     }
+
+
 
     public long getId() {
         return id;
