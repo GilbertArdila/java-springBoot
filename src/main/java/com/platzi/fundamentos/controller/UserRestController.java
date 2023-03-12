@@ -2,10 +2,13 @@ package com.platzi.fundamentos.controller;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.platzi.fundamentos.entity.User;
+import com.platzi.fundamentos.repository.UserRepository;
 import com.platzi.fundamentos.useCases.CreateUsersImplemets;
 import com.platzi.fundamentos.useCases.DeleteUsersImplemets;
 import com.platzi.fundamentos.useCases.GetUser;
 import com.platzi.fundamentos.useCases.UpdateUsersImplemets;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +24,17 @@ public class UserRestController {
  private CreateUsersImplemets createUser;
  private DeleteUsersImplemets deleteUser;
  private UpdateUsersImplemets updateUser;
+ private UserRepository repository;
 
-    public UserRestController(GetUser getUser,CreateUsersImplemets createUser,DeleteUsersImplemets deleteUser,UpdateUsersImplemets updateUser) {
+    public UserRestController(GetUser getUser,CreateUsersImplemets createUser,
+                              DeleteUsersImplemets deleteUser,
+                              UpdateUsersImplemets updateUser,
+                              UserRepository repository) {
         this.getUser = getUser;
         this.createUser=createUser;
         this.deleteUser = deleteUser;
         this.updateUser = updateUser;
+        this.repository = repository;
     }
 
     @GetMapping("/all")
@@ -49,5 +57,10 @@ public class UserRestController {
     ResponseEntity<User> replaceUser(@RequestBody User newUser,@PathVariable Long id){
        updateUser.update(newUser,id);
        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/pagination")
+    List<User>getUserWithPagination(@RequestParam int page, @RequestParam int size){
+         return repository.findAll(PageRequest.of(page,size)).getContent();
     }
 }
