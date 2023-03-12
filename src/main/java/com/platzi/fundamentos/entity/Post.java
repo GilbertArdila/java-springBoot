@@ -1,5 +1,7 @@
 package com.platzi.fundamentos.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,6 +18,7 @@ public class Post {
 
     //many posts may be created by one single user
     @ManyToOne
+    @JsonBackReference
     private User user;
 
     public Post() {

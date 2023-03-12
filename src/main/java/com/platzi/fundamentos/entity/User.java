@@ -38,6 +38,9 @@ public class User {
         this.birthday = birthday;
     }
 
+    public User(long id) {
+        this.id = id;
+    }
 
 
     public long getId() {
