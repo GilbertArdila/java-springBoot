@@ -2,6 +2,7 @@ package com.platzi.fundamentos;
 
 import com.platzi.fundamentos.entity.User;
 import com.platzi.fundamentos.repository.UserRepository;
+import com.platzi.fundamentos.service.UserService;
 import lombok.extern.apachecommons.CommonsLog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
@@ -21,8 +22,12 @@ import java.util.List;
 public class FundamentosApplication implements CommandLineRunner {
 	@Autowired
 	private UserRepository userRepository;
-	public FundamentosApplication(UserRepository userRepository) {
+	@Autowired
+	private UserService userService;
+	public FundamentosApplication(UserRepository userRepository,UserService userService) {
+
 		this.userRepository = userRepository;
+		this.userService = userService;
 	}
 
 	public static void main(String[] args) {
@@ -94,12 +99,30 @@ public class FundamentosApplication implements CommandLineRunner {
 			  .orElseThrow(() -> new RuntimeException("No hay usuario que coincida")));
    }
 
+   private void saveWithErrorTransactional(){
+	   User test1 = new User("TestTransactional1", "TestTransactional1@domain.com", LocalDate.now());
+	   User test2 = new User("TestTransactional2", "TestTransactional2@domain.com", LocalDate.now());
+	   User test3 = new User("TestTransactional3", "TestTransactional3@domain.com", LocalDate.now());
+	   User test4 = new User("TestTransactional4", "TestTransactional1@domain.com", LocalDate.now());
+
+	   List<User> users = Arrays.asList(test1,test2,test3,test4);
+	   try{
+		   userService.saveTransactional(users);
+	   }
+	   catch (RuntimeException r){
+		   log.error(r);
+	   }
+
+		userService.getAllUsers().forEach(user -> log.info("Usuarios: "+user));
+	}
+
 	@Override
 	public void run(String... args) throws Exception {
 		saveUsersInDB();
-		getInfoJPQLFromUser();
+		/**getInfoJPQLFromUser();
 		getAndSort();
 		getByName();
-		getByNameLike();
+		getByNameLike();*/
+		saveWithErrorTransactional();
 	}
 }
