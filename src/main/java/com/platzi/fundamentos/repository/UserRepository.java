@@ -1,9 +1,11 @@
 package com.platzi.fundamentos.repository;
 
+import com.platzi.fundamentos.dto.UserDto;
 import com.platzi.fundamentos.entity.User;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -25,8 +27,12 @@ public interface UserRepository extends JpaRepository<User ,Long> {
 
    List<User> findByBirthdayBetween(LocalDate begin,LocalDate end);
 
-   List<User>findByNameLikeOrderByDesc(String name);
+  // List<User>findByNameLikeOrderByDesc(String name);
 
-
+   @Query("SELECT new com.platzi.fundamentos.dto.UserDto(u.id,u.name,u.birthday)"+
+   "FROM User u "+
+   "WHERE u.birthday =:fecha "+
+   "AND u.email=:email")
+  Optional<UserDto>getAllByBirthdayAndEmail(@Param("fecha") LocalDate birthday,@Param("email") String email);
 
 }

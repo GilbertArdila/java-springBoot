@@ -90,6 +90,8 @@ public class FundamentosApplication implements CommandLineRunner {
 	   userRepository.findByBirthdayBetween(LocalDate.of(2016,05,15),
 					   LocalDate.of(2019,03,18))
 			   .forEach(user -> log.info("Usuarios por fecha "+user));
+	  log.info("Usuario con parametros "+userRepository.getAllByBirthdayAndEmail(LocalDate.of(2019, 9, 8),"daniela@domain.com")
+			  .orElseThrow(() -> new RuntimeException("No hay usuario que coincida")));
    }
 
 	@Override
